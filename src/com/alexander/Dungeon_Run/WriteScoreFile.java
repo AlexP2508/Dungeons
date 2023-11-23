@@ -1,16 +1,15 @@
 package com.alexander.Dungeon_Run;
 
-import java.io.FileWriter;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
-
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WriteScoreFile {
 
@@ -18,8 +17,8 @@ public class WriteScoreFile {
 
     public void writeScoreFile() {
 
-        try {
-            FileWriter playerFileWriter = new FileWriter("Player_Results.txt");  // Default means file gets created in the project folder
+        try (FileWriter playerFileWriter = new FileWriter("Player_Results.txt")) {
+            // Default means file gets created in the project folder
 
             playerFileWriter.write(player.getPlayerName() +
                     "\nLevel reached: " + player.getLevel() +
@@ -29,11 +28,12 @@ public class WriteScoreFile {
             playerFileWriter.close();
             System.out.println("To see final score stats, check the text-file named 'Player_Results.txt'");
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
+            // or use a logger to log the exception
+            // logger.error("Error while writing to file", e);
             System.out.println("It doesn't work");
         }
-
     }
 
     public static class PlayerTests {
@@ -45,7 +45,6 @@ public class WriteScoreFile {
             player = new Player();
         }
 
-
         @Test
         @DisplayName("Checking to see if the right amount of damage from player is returned")
         public void calculateDamageTest() {
@@ -55,7 +54,6 @@ public class WriteScoreFile {
                             player.getMaxDamage() >= player.calculateDamage());
         }
 
-
         @Test
         @DisplayName("Checking if players level increases when maxExperience is reached")
         public void checkIfLeveledUpTest() {
@@ -64,7 +62,6 @@ public class WriteScoreFile {
 
             assertEquals(2, player.getLevel());
         }
-
 
         @Test
         @DisplayName("Checking to see if the player can lose the game by dying")
@@ -77,19 +74,15 @@ public class WriteScoreFile {
         @RepeatedTest(5)
         @DisplayName("Adding X amount of experience to check if the random amount of exp is added to players experience")
         public void experienceAmountXTest() {
-            Random random = new Random();
-            player.setExperience(39);
+            Random random = new Random(123); // Use a seed value for determinism
+            player.setExperience(19);
 
             int x = random.nextInt(1, 10);
             System.out.println(x);
             player.setExperience(player.getExperience() + x);
             player.checkIfLevelUp();
-
         }
-
-
-
     }
 }
-*/
+
 
